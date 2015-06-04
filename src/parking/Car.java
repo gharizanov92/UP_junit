@@ -29,7 +29,7 @@ public class Car {
     }
     
     public Car(Car other){
-        this(other.model, other.abonament);
+        this(other.getModel(), other.getAbonament());
     }
 
     public String getModel() {

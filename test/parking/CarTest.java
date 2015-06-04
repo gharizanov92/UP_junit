@@ -1,15 +1,15 @@
 package parking;
 
-import org.junit.Before;
 import org.junit.Test;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 
 import static org.junit.Assert.fail;
 
-public class CarTest extends TestBase {
+public class CarTest {
 
     private static Car[] cars;
     private static Car car;
@@ -17,16 +17,41 @@ public class CarTest extends TestBase {
     public static Car newCarInstance() throws Exception{
         return Car.class.getConstructor().newInstance();
     }
-    
-    @Before
-    public void setUp() throws Exception {
-        car = Car.class.getConstructor().newInstance();
-        cars = new Car[50];
-        
-        for (int i = 0; i < 50; i++) {
-            int modelInt = (int)(Math.random() + 0.5);
-            cars[i] = new Car(modelInt == 0 ? "Opel" : "Volvo", i % 12);
+
+    public static boolean hasSetMethod(String method, Class... params){
+        try{
+            Car.class.getMethod(method, params);
+        } catch (Exception ex){
+            return false;
         }
+        return true;
+    }
+
+    public static void callSetMethod(Car instance, String method, Class paramType, Object value) throws Exception {
+        Method setMethod = null;
+        if(!hasSetMethod(method, paramType)){
+            if(paramType.getName().contains("Integer")){
+                setMethod = Car.class.getMethod(method, int.class);
+                setMethod.invoke(instance, value);
+            }
+        } else {
+            setMethod = Car.class.getMethod(method, paramType);
+            setMethod.invoke(instance, paramType.cast(value));
+        }
+    }
+
+    public static boolean hasGetMethod(String method){
+        try{
+            Car.class.getMethod(method);
+        } catch (Exception ex){
+            return false;
+        }
+        return true;
+    }
+
+    public static Object callGetMethod(Car instance, String method) throws Exception{
+        Method getMethod = Car.class.getMethod(method);
+        return getMethod.invoke(instance);
     }
 
     @Test
@@ -52,15 +77,16 @@ public class CarTest extends TestBase {
 
     @Test
     public void testConstructor(){
+        Car car = null;
         try{
             Constructor<Car> ctr = Car.class.getConstructor(String.class, Integer.TYPE);
-            Car car = ctr.newInstance("Volvo",5);
+            car = ctr.newInstance("Volvo",5);
             assert callGetMethod(car, "getModel").equals("Volvo");
             assert callGetMethod(car, "getAbonament").equals(5);
         } catch (Exception ex){
             try{
                 Constructor<Car> ctr = Car.class.getConstructor(Integer.TYPE, String.class);
-                ctr.newInstance(5, "Volvo");
+                car = ctr.newInstance(5, "Volvo");
                 assert callGetMethod(car, "getModel").equals("Volvo");
                 assert callGetMethod(car, "getAbonament").equals(5);
             } catch (Exception ex2){

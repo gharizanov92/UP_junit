@@ -33,7 +33,7 @@ public class Parking {
     public Car[] getCars() {
         Car[] result = new Car[TOTAL_CARS];
         for (int i = 0; i < result.length; i++) {
-            if(result[i] != null){
+            if(cars[i] != null){
                 result[i] = new Car(cars[i]);
             }
         }
@@ -55,7 +55,9 @@ public class Parking {
     public void setLocation(String location) {
         if(location == null){
             this.location = UNKNOWN_LOCATION;
-        }        
+        } else {
+            this.location = location;
+        }
     }
     
     public void sortCars(){
@@ -78,6 +80,5 @@ public class Parking {
         }
         return String.format("Address: %s, cars: %s", this.location, carsStr);
     }
-    
     
 }
