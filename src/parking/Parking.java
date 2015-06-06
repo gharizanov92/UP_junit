@@ -74,11 +74,11 @@ public class Parking {
 
     @Override
     public String toString() {
-        String carsStr = "[";
+        String carsStr = "";
         for (int i = 0; i < cars.length; i++) {
             carsStr += String.format("car ID %s\tSubscription:%d\n", cars[i].getNOMER(), cars[i].getAbonament());
         }
-        return String.format("Address: %s, cars: %s", this.location, carsStr);
+        return String.format("Address: %s, Total cars: %s\n%s", this.location, TOTAL_CARS, carsStr);
     }
     
 }

@@ -148,10 +148,31 @@ public class ParkingTestJUNIT {
     }
 
     @Test
-    public void testSorted() throws Exception {
-
+    public void testToString() throws Exception{
+        Parking parking = newParkingInstance();
+        String methodToCall = "setLocation";
+        callSetMethod(parking, methodToCall, String.class, "Sofia");
+        Car[] cars = generateCarArray();
+        callSetMethod(parking, "setCars", Car[].class, cars);
+        String toString = parking.toString();
+        System.err.println(toString);
+        //assert callGetMethod(aParking, "getLocation").equals("Test");
     }
 
+    @Test
+    public void testSorted() throws Exception {
 
+        Car[] carsToBeSorted = generateCarArray();
+        Parking parking = newParkingInstance();
+        callSetMethod(parking, "setCars", Car[].class, carsToBeSorted);
+        callGetMethod(parking, "sortCars");
+        Car[] cars = (Car[])callGetMethod(parking, "getCars");
+        for (int i = 0; i < cars.length - 1; i++) {
+            Integer abonament1 = (Integer)CarTest.callGetMethod(cars[i], "getAbonament");
+            Integer abonament2 = (Integer)CarTest.callGetMethod(cars[i + 1], "getAbonament");
+            assert abonament1 >= abonament2;
+        }
+
+    }
 
 }
